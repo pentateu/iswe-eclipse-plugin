@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iswe-generators xmlns="http://www.iswe.co.nz/isweframework/xsd/iswe-generator-1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="
+		http://www.iswe.co.nz/isweframework/xsd/iswe-generator-1.0.0
+		./iswe-generator.xsd">
+
+<!-- 
+	#### IMPORTANT - File used in the test class ####
+	Any changes done in this file
+	need to be reflected in the test class:
+	nz.co.iswe.generator.config.ConfigurationContextTest
+ -->
+
+	<generatorContext>original generatorContext</generatorContext>
+	<entityInfoFactory>original entityInfoFactory</entityInfoFactory>
+	
+	
+	<groups>
+		<group id="Model">
+			<generator ref="JpaDAO_Abstract" />
+			<generator ref="HibernateConfig" />
+		</group>
+		<group id="ControllerLayer">
+			<generator ref="Controller_Abstract" />
+			<generator ref="SpringModelConfig" />
+		</group>
+	</groups>
+
+	<oneToOne>
+		<generator id="JpaDAO_Abstract" class="nz.co.iswe.generator.impl.jpa.JpaAbstractDAOGenerator">
+			<input type="velocity">
+				<filename>JpaDAOAbstract.vm</filename>
+			</input>
+
+			<output override="always"/>
+
+			<helpers>
+				<!-- 
+					contextName is used inside the template:
+					${dao.getSomething()}
+				 -->
+				<helper ref="JpaDAOHelper" contextName="dao" />
+			</helpers>
+
+			<!-- Generator Local Properties -->
+			<properties>
+				<default.property1.name>default value 1</default.property1.name>
+				<default.property2.name>default value 2</default.property2.name>
+			</properties>
+		</generator>
+	</oneToOne>
+
+
+	<manyToOne>
+		<generator id="HibernateConfig"
+			class="co.nz.iswe.generator.impl.hibrenate.HibernateConfig">
+			<input type="velocity">
+				<filename>HibernateConfig.vm</filename>
+			</input>
+
+			<output override="always"/>
+			
+			<properties>
+				<hibernate.config.filename>hibernate.config.xml</hibernate.config.filename>
+			</properties>
+		</generator>
+	</manyToOne>
+
+
+	<helpers>
+		<helper id="JpaDAOHelper" class="nz.co.iswe.generator.impl.helper.DAOHelper">
+			<!-- Pattern Properties -->
+			<properties>
+				<!--
+				 	packageFrom is a regular expression to define what portion of the
+				 	entity package will be replaced with the content of the property packageTo
+				 -->
+				<packageFrom>entities</packageFrom>
+				
+				<!-- Literal value to be used to replace the entity package -->
+				<packageTo>dao</packageTo>
+				
+				<!-- 
+					The dao object in the expression is the Helper itself.
+					${dao.package} will return the dao package by using the 
+					entity package and doing a replace with the packageTo literal
+					the entity object in the expression is the entity object being
+					processed in the moment.
+					${entity.simpleName} return the entity name without the package
+				-->
+				<abstract.fullyQualifiedName>${dao.package}.${entity.simpleName}DAOAbstract</abstract.fullyQualifiedName>
+				<interface.fullyQualifiedName>${dao.package}.I${entity.simpleName}DAO</interface.fullyQualifiedName>
+				<impl.fullyQualifiedName>${dao.package}.${entity.simpleName}DAOImpl</impl.fullyQualifiedName>
+			</properties>
+		</helper>
+	</helpers>
+
+	<!-- Global Properties -->
+	<properties>
+		<!-- Default values. Can be overriden by a project specific configuration.xml file -->
+		<velocity.default.templates>./templates</velocity.default.templates>
+
+		
+	</properties>
+
+</iswe-generators>

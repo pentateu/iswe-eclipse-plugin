@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+	<extension
+       id="nz.co.iswe.eclipse.plugin.popupMenus"
+       name="ISWE"
+       point="org.eclipse.ui.popupMenus">
+     	<objectContribution
+                id="nz.co.iswe.eclipse.plugin.compilationunit.actions"
+                objectClass="org.eclipse.jdt.core.ICompilationUnit" >
+                
+                 <menu
+		               label="ISWE"
+		               path="additions"
+		               id="nz.co.iswe.eclipse.plugin.menu1">
+		            <separator
+		                  name="group1">
+		            </separator>
+		         </menu>
+                
+                <action id="nz.co.iswe.eclipse.plugin.compilationunit.actions.generateModelAction"
+                        label="Generate Model Classes"
+                        menubarPath="nz.co.iswe.eclipse.plugin.menu1/group1"
+                        class="nz.co.iswe.eclipse.plugin.popup.actions.GenerateModelClasses"        
+                        enablesFor="+">
+           		</action>
+        </objectContribution>
+     	<objectContribution
+                id="nz.co.iswe.eclipse.plugin.type.actions"
+                objectClass="org.eclipse.jdt.core.IType" >
+                <menu
+		               label="ISWE"
+		               path="additions"
+		               id="nz.co.iswe.eclipse.plugin.menu1">
+		            <separator
+		                  name="group1">
+		            </separator>
+		         </menu>
+                <action id="nz.co.iswe.eclipse.plugin.type.actions.generateModelAction"
+                        label="Generate Model Classes"
+                        menubarPath="nz.co.iswe.eclipse.plugin.menu1/group1"
+                        class="nz.co.iswe.eclipse.plugin.popup.actions.GenerateModelClasses"
+                        enablesFor="+">
+            </action>
+        </objectContribution>
+         
+        <viewerContribution
+         	id="nz.co.iswe.eclipse.plugin.editor.actions"
+        	targetID="#CompilationUnitEditorContext">
+        	<menu
+		               label="ISWE"
+		               path="additions"
+		               id="nz.co.iswe.eclipse.plugin.menu1">
+		            <separator
+		                  name="group1">
+		            </separator>
+		         </menu>
+            <action id="nz.co.iswe.eclipse.plugin.type.editor.generateModelAction"
+               label="Generate Model Classes"
+               menubarPath="nz.co.iswe.eclipse.plugin.menu1/group1"
+               class="nz.co.iswe.eclipse.plugin.popup.actions.GenerateModelClasses"
+               enablesFor="+">  
+            </action>
+       	</viewerContribution>
+         
+   </extension>
+   
+ <extension id="nz.co.iswe.eclipse.plugin.properties" 
+ 			name="ISWE" 
+ 			point="org.eclipse.ui.propertyPages" >
+ 			
+    <page objectClass="org.eclipse.core.resources.IProject"
+	        adaptable="true"
+          class="nz.co.iswe.eclipse.plugin.properties.ISWEGeneratorSettingsPage"
+          id="nz.co.iswe.eclipse.plugin.properties.ISWEGeneratorSettingsPage"
+          name="ISWE" >
+       
+    </page>
+ </extension>
+ 
+ 
+ <extension id="nz.co.iswe.eclipse.plugin.preferences"
+		   	name="ISWE"
+	       	point="org.eclipse.ui.preferencePages">
+	       	
+	  <page name="ISWE" 
+	  		class= "nz.co.iswe.eclipse.plugin.properties.ISWEGeneratorSettingsPage"
+	        id= "nz.co.iswe.eclipse.plugin.preferences.ISWEGeneratorSettingsPage">
+	  </page>
+	</extension>
+	
+	
+
+<!--
+   <extension point="org.eclipse.ui.popupMenus">
+        
+        
+      <viewerContribution 
+      id="nz.co.iswe.eclipse.plugin.generate"
+   targetID="org.eclipse.jdt.ui.PackageExplorer"> 
+   
+   
+   <menu
+               label="ISWE"
+               path="additions"
+               id="nz.co.iswe.eclipse.plugin.menu1">
+            <separator
+                  name="group1">
+            </separator>
+         </menu>
+         
+         <action
+               label="Generate Model Classes"
+               class="nz.co.iswe.eclipse.plugin.popup.actions.GenerateModelClasses"
+               menubarPath="nz.co.iswe.eclipse.plugin.menu1/group1"
+               enablesFor="1"
+               id="nz.co.iswe.eclipse.plugin.GenerateModelClasses">
+         </action>
+   
+   
+   </viewerContribution> 
+ 
+     
+      
+   </extension>
+   -->
+
+</plugin>

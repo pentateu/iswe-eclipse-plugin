@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema
+	xmlns="http://www.iswe.co.nz/isweframework/xsd/iswe-generator-1.0.0"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.iswe.co.nz/isweframework/xsd/iswe-generator-1.0.0"
+	elementFormDefault="qualified">
+
+	<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+
+	<xsd:element name="iswe-generators" type="GeneratorContextConfig">
+	</xsd:element>
+	
+	<xsd:complexType name="GeneratorContextConfig">
+		<xsd:sequence>
+			<xsd:element name="generatorContext" type="xsd:string"
+				minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+						Defines the Implementation class for the GeneratorContext.
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<xsd:element name="entityInfoFactory" type="xsd:string"
+				minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+						Defines the Implementation class for the EntityInfoFactory.
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!--
+			<xsd:element name="templateEncoding" type="xsd:string"
+				minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+						Defines the Temnplate encoding.
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			-->
+			
+
+			<!-- groups -->
+			<xsd:element name="groups" type="ListOfGroups" minOccurs="1" />
+
+			<!-- oneToMany -->
+			<xsd:element name="oneToOne" type="ListOfOneToOneGenerators" minOccurs="0" />
+
+			<!-- manyToOne -->
+			<xsd:element name="manyToOne" type="ListOfManyToOneGenerators"
+				minOccurs="0" />
+
+			<!-- helpers -->
+			<xsd:element name="helpers" type="ListOfHelpers" minOccurs="0" />
+
+			<!-- Global Properties -->
+			<xsd:element name="properties" type="ListOfProperties">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+						List of Global Properties.
+						These properties will be injected in the context of all
+						Generators.
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="ListOfHelpers">
+		<xsd:annotation>
+			<xsd:documentation><![CDATA[
+				List of helpers definition.
+				Each helper can be later associated with generators.
+			]]></xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<!-- generator -->
+			<xsd:element name="helper" minOccurs="1" maxOccurs="unbounded"
+				type="HelperConfig" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="ListOfManyToOneGenerators">
+		<xsd:annotation>
+			<xsd:documentation><![CDATA[
+				This element contains a list of generators
+				that follow the 'manyToOne' helper.
+				Where for a list of entities the generator will produce one output.
+			]]></xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<!-- generator -->
+			<xsd:element name="generator" minOccurs="1" maxOccurs="unbounded"
+				type="GeneratorConfig" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="ListOfOneToOneGenerators">
+		<xsd:annotation>
+			<xsd:documentation><![CDATA[
+				This element contains a list of generators
+				that follow the 'oneToOne' helper.
+				Where for each entity the generator will generate one output.
+			]]></xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<!-- generator -->
+			<xsd:element name="generator" minOccurs="1" maxOccurs="unbounded"
+				type="GeneratorConfig" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="GroupConfig">
+		<xsd:sequence>
+			<!-- Generator reference -->
+			<xsd:element name="generator" minOccurs="1" maxOccurs="unbounded"
+				type="ReferenceGenerator" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID">
+			<xsd:annotation>
+				<xsd:documentation><![CDATA[
+					Runtime unique identifier.
+					]]></xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:complexType name="ListOfGroups">
+		<xsd:annotation>
+			<xsd:documentation><![CDATA[
+				This element contain a list of generators groups
+				Each group contains a
+				list of generators to be executed when the group is invoked.
+			]]></xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<!-- Generators -->
+			<xsd:element name="group" type="GroupConfig" minOccurs="1" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="ReferenceGenerator">
+		<xsd:attribute name="ref" type="xsd:string">
+			<xsd:annotation>
+				<xsd:documentation><![CDATA[
+					Reference to a previously defined generator. The ref indicates
+					the generator id.
+				]]></xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:complexType name="InputConfig">
+		<xsd:sequence>
+			<xsd:element name="filename" minOccurs="1" maxOccurs="1"
+				type="xsd:string" />
+		</xsd:sequence>
+
+		<xsd:attribute name="type" default="velocity">
+			<xsd:annotation>
+				<xsd:documentation><![CDATA[
+					Defines the type of template engine used to process the templates
+				]]></xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="velocity" />
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+
+	</xsd:complexType>
+
+	<xsd:complexType name="OutputConfig">
+		<xsd:attribute name="override" default="always">
+			<xsd:annotation>
+				<xsd:documentation><![CDATA[
+					Determines if the generator will override an existing file.
+					Can be set to:
+					always -> Will always override if an existing file exists
+					no -> will create a new file if none exists and will not override
+					if there is an existing file.
+				]]></xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="always" />
+					<xsd:enumeration value="no" />
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:complexType name="HelperConfig">
+		<xsd:sequence>
+			<xsd:element name="properties" type="ListOfProperties"
+				minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID">
+			<xsd:annotation>
+				<xsd:documentation><![CDATA[
+					Helper unique identifier.
+				]]></xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="class" type="xsd:string">
+			<xsd:annotation>
+				<xsd:documentation source="java:java.lang.Class"><![CDATA[
+				Implementation class of the Helper.
+				]]></xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+
+	</xsd:complexType>
+
+	<xsd:complexType name="ReferenceHelper">
+		<xsd:attribute name="ref" type="xsd:string">
+			<xsd:annotation>
+				<xsd:documentation><![CDATA[
+					Reference to a helper defined elsewhere in the document.
+				]]></xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="contextName" type="xsd:string">
+			<xsd:annotation>
+				<xsd:documentation><![CDATA[
+					contextName is the variable name used when the helper is inserted
+					into the template context.
+					To access the patter form inside the template us the following:
+					${Helper.get("dao").getSomething()}
+				]]></xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:complexType name="ReferenceHelpers">
+		<xsd:sequence>
+			<xsd:element name="helper" minOccurs="1" type="ReferenceHelper"
+				maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="ListOfProperties">
+		<xsd:sequence>
+			<xsd:any minOccurs="0" maxOccurs="unbounded" processContents="skip" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="GeneratorConfig">
+		<xsd:all>
+			<xsd:element name="input" type="InputConfig" minOccurs="0" />
+			<xsd:element name="output" type="OutputConfig" minOccurs="0" />
+			<xsd:element name="helpers" type="ReferenceHelpers"
+				minOccurs="0" />
+			<xsd:element name="properties" type="ListOfProperties"
+				minOccurs="0" />
+		</xsd:all>
+		<xsd:attribute name="id" type="xsd:ID">
+			<xsd:annotation>
+				<xsd:documentation><![CDATA[
+				The unique identifier for a bean.
+				]]></xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="class" type="xsd:string">
+			<xsd:annotation>
+				<xsd:documentation source="java:java.lang.Class"><![CDATA[
+				Implementation class of the Generator.
+				]]></xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+
+</xsd:schema>

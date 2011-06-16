@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iswe-generators xmlns="http://www.iswe.co.nz/isweframework/xsd/iswe-generator-1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="
+		http://www.iswe.co.nz/isweframework/xsd/iswe-generator-1.0.0
+		./iswe-generator.xsd">
+
+	<generatorContext>new value for generatorContext</generatorContext>
+	<entityInfoFactory>new value for entityInfoFactory</entityInfoFactory>
+	
+	
+	<groups>
+		<group id="Model">
+			<generator ref="BO_Abstract" />
+			<generator ref="HibernateConfig" />
+		</group>
+		<group id="FacadeLayer">
+			<generator ref="JpaDAO_Abstract" />
+			<generator ref="HibernateConfig" />
+		</group>
+	</groups>
+
+	<oneToOne>
+		<generator id="JpaDAO_Abstract" class="nz.co.iswe.generator.impl.jpa.CustomJpaAbstractDAOGenerator">
+			<input type="velocity">
+				<filename>CustomJpaDAOAbstract.vm</filename>
+			</input>
+
+			<output override="always"/>
+
+			<helpers>
+				<!-- 
+					contextName is used inside the template:
+					${dao.getSomething()}
+				 -->
+				<helper ref="JpaDAOHelper" contextName="dao" />
+			</helpers>
+
+			<!-- Generator Local Properties -->
+			<properties>
+				<query.match.strategy>1</query.match.strategy>
+			</properties>
+		</generator>
+
+<generator id="BO_Abstract" class="nz.co.iswe.generator.impl.BOAbstractGenerator">
+			<input type="velocity">
+				<filename>BOAbstract.vm</filename>
+			</input>
+
+			<output override="always"/>
+
+			<helpers>
+				<!-- 
+					contextName is used inside the template:
+					${dao.getSomething()}
+				 -->
+				<helper ref="BOHelper" contextName="dao" />
+			</helpers>
+		</generator>
+
+	</oneToOne>
+
+
+	<manyToOne>
+		<generator id="HibernateConfig"
+			class="co.nz.iswe.generator.impl.hibrenate.HibernateConfig">
+			<input type="velocity">
+				<filename>CustomHibernateConfig.vm</filename>
+			</input>
+
+			<output override="no">
+				<filename>hibernate.config.xml</filename>
+			</output>
+		</generator>
+
+<generator id="SpringConfig"
+			class="co.nz.iswe.generator.impl.spring.SpringConfigGenerator">
+			<input type="velocity">
+				<filename>SpringConfig.vm</filename>
+			</input>
+
+			<output override="always">
+				<filename>appContext.xml</filename>
+			</output>
+		</generator>
+	</manyToOne>
+
+
+	<helpers>
+		<helper id="JpaDAOHelper" class="nz.co.iswe.generator.impl.helper.DAOHelper">
+			<!-- Pattern Properties -->
+			<properties>
+				<!--
+				 	packageFrom is a regular expression to define what portion of the
+				 	entity package will be replaced with the content of the property packageTo
+				 -->
+				<packageFrom>entity</packageFrom>
+				
+				<!-- Literal value to be used to replace the entity package -->
+				<packageTo>dao</packageTo>
+				
+				<!-- 
+					The dao object in the expression is the Helper itself.
+					${dao.package} will return the dao package by using the 
+					entity package and doing a replace with the packageTo literal
+					the entity object in the expression is the entity object being
+					processed in the moment.
+					${entity.simpleName} return the entity name without the package
+				-->
+				<abstract.fullyQualifiedName>${dao.package}.${entity.simpleName}DAOAbstract</abstract.fullyQualifiedName>
+				<interface.fullyQualifiedName>${dao.package}.I${entity.simpleName}DAO</interface.fullyQualifiedName>
+				<impl.fullyQualifiedName>${dao.package}.${entity.simpleName}DAOImpl</impl.fullyQualifiedName>
+			</properties>
+		</helper>
+
+
+<helper id="BOHelper" class="nz.co.iswe.generator.impl.helper.BOHelper">
+			<!-- Pattern Properties -->
+			<properties>
+				<!--
+				 	packageFrom is a regular expression to define what portion of the
+				 	entity package will be replaced with the content of the property packageTo
+				 -->
+				<packageFrom>entity</packageFrom>
+				
+				<!-- Literal value to be used to replace the entity package -->
+				<packageTo>bo</packageTo>
+				
+			
+				<abstract.fullyQualifiedName>${bo.package}.${entity.simpleName}BOAbstract</abstract.fullyQualifiedName>
+				<interface.fullyQualifiedName>${bo.package}.I${entity.simpleName}BO</interface.fullyQualifiedName>
+				<impl.fullyQualifiedName>${bo.package}.${entity.simpleName}BOImpl</impl.fullyQualifiedName>
+			</properties>
+		</helper>
+
+	</helpers>
+
+	<!-- Global Properties -->
+	<properties>
+		<!-- Default values. Can be overriden by a project specific configuration.xml file -->
+		<velocity.default.templates>./customTemplates</velocity.default.templates>
+		
+	</properties>
+
+</iswe-generators>

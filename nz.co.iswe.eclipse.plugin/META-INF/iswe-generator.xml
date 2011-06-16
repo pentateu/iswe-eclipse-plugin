@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iswe-generators xmlns="http://www.iswe.co.nz/isweframework/xsd/iswe-generator-1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="
+		http://www.iswe.co.nz/isweframework/xsd/iswe-generator-1.0.0
+		./iswe-generator.xsd">
+
+	<groups>
+		<group id="ModelLayer">
+			<generator ref="JpaDAO_Abstract" />
+			<generator ref="HibernateConfig" />
+		</group>
+		<group id="ControllerLayer">
+			<generator ref="JpaDAO_Abstract" />
+			<generator ref="HibernateConfig" />
+		</group>
+	</groups>
+
+
+	<helpers>
+		<helper id="JpaDAOHelper">
+			<!-- Pattern Properties -->
+			<properties>
+				<!-- replace the implName propertie -->
+				<impl.fullyQualifiedName>${dao.package}.impl.${entity.simpleName}DAOImpl</impl.fullyQualifiedName>
+			</properties>
+		</helper>
+	</helpers>
+	
+
+	<!-- Global Properties -->
+	<properties>
+		<!-- relative to the project folder -->
+		<velocity.templates>./templates</velocity.templates>
+	</properties>
+
+</iswe-generators>

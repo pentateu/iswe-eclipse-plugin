@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Plugin
+Bundle-SymbolicName: nz.co.iswe.eclipse.plugin; singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: nz.co.iswe.eclipse.plugin.ISWEPlugin
+Bundle-Vendor: ISWE Technologies
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.jdt.core,
+ org.eclipse.jdt.ui,
+ org.eclipse.ui.editors,
+ org.eclipse.jface.text;bundle-version="3.6.1"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .,
+ libs/commons-beanutils-1.8.0.jar,
+ libs/velocity-1.7-dep.jar,
+ libs/commons-logging-1.1.1.jar

@@ -1,0 +1,6 @@
+
+
+JUNIT Article: http://stackoverflow.com/questions/255370/automating-unit-tests-junit-for-eclipse-plugin-development
+
+
+1: Method getPropertyList on entityInfo must be properly implemented.
