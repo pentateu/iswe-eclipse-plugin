@@ -215,9 +215,7 @@ public abstract class GeneratorContext implements IGeneratorContext {
 			} catch (ClassNotFoundException e) {
 				throw new RuntimeException("Class not found for Generator. clazz: " + clazz, e);
 			}
-			
 			cachedGenerators.put(generatorConfig.getId(), generator);
-			
 			setupGenerator(generator, generatorConfig);
 		}
 		

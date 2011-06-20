@@ -16,7 +16,7 @@ public class DAOHelper extends AbstractHelper implements IHelper, IPattern {
 	//public static final String DAO_ABSTRACT = "DAOAbstract";
 	//public static final String CONTEXT_NAME = DAO;
 	
-	protected DAOHelper() {
+	public DAOHelper() {
 		super(NAME);
 	}
 	
