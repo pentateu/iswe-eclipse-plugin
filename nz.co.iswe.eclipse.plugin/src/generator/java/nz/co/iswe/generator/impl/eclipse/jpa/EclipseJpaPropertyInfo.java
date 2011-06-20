@@ -105,6 +105,12 @@ public class EclipseJpaPropertyInfo extends BasePropertyInfo {
 		if("String".equals(propertyType)){
 			return PropertyType.TEXT;
 		}
+		else if("Long".equalsIgnoreCase(propertyType)){
+			return PropertyType.INTEGER;
+		}
+		else if("Integer".equalsIgnoreCase(propertyType)){
+			return PropertyType.INTEGER;
+		}
 		else{
 			return PropertyType.TEXT;
 		}
