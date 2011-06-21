@@ -1,5 +1,7 @@
 package nz.co.iswe.generator.info;
 
+import nz.co.iswe.generator.annotation.MatchMode;
+
 
 /**
  * 
@@ -25,7 +27,7 @@ public abstract class BasePropertyInfo implements PropertyInfo {
 	
 	protected String label;
 	
-	protected String matchMode;
+	protected String matchMode = MatchMode.ANYWHERE.toString();// DEFAULT
 	
 	public String getName() {
 		return name;

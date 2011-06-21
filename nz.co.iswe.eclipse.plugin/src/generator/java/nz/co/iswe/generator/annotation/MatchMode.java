@@ -7,7 +7,7 @@ public enum MatchMode {
 	END,
 	ANYWHERE;
 	
-	public String mapear(){
+	public String toString(){
 		switch(this){
 			case START: return "START";
 			case EXACT: return "EXACT";

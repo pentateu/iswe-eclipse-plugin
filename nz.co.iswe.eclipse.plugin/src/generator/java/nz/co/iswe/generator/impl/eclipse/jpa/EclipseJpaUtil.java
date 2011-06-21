@@ -1,5 +1,6 @@
 package nz.co.iswe.generator.impl.eclipse.jpa;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.IAnnotatable;
 import org.eclipse.jdt.core.IAnnotation;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -63,6 +64,25 @@ public class EclipseJpaUtil {
 		}
 		
 		return result;
+	}
+
+	public String lookUpImport(ICompilationUnit compilationUnit, String className) {
+		try {
+			IImportDeclaration[] imports = compilationUnit.getImports();
+			
+			for (IImportDeclaration importDeclaration : imports) {
+				String impFullName = importDeclaration.getElementName();
+				String impClassName = impFullName.substring(impFullName.lastIndexOf('.') + 1);
+				
+				if (impFullName.equals(className) || impClassName.equals(className)) {
+					return importDeclaration.getElementName();
+				}
+			}
+			return null;
+		}
+		catch (JavaModelException e) {
+			throw new RuntimeException("Error looking-up for import: " + className, e);
+		}
 	}
 
 }

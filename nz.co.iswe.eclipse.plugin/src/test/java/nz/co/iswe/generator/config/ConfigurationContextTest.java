@@ -1,6 +1,8 @@
 package nz.co.iswe.generator.config;
 
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import junit.framework.Assert;
 
@@ -42,6 +44,7 @@ public class ConfigurationContextTest {
 
 	@Test
 	public void testDefaultConfig() {
+		
 		// asserts on the original configuration
 		Assert.assertEquals("original entityInfoFactory", defaultSettings.getEntityInfoFactory());
 		Assert.assertEquals("original generatorContext", defaultSettings.getGeneratorContext());

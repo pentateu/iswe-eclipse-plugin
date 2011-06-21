@@ -3,6 +3,8 @@ package nz.co.iswe.generator.impl.eclipse.jpa;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import nz.co.iswe.generator.info.BaseEntityInfo;
 import nz.co.iswe.generator.info.ParsingEntityException;
@@ -90,16 +92,22 @@ public class EclipseJpaEntityInfo extends BaseEntityInfo {
 			// check it it is persistent
 			IAnnotation transientAnnotation = EclipseJpaUtil.getInstance().getAnnotation(JAVAX_PERSISTENCE_TRANSIENT,
 					field);
-
+			
 			if (transientAnnotation != null) {
+				shouldIgnore = true;
+			}
+			
+			//check for static fields
+			Pattern pattern = Pattern.compile("(.?)(\\Qstatic\\E)(\\s)(.+)");
+			Matcher matcher = pattern.matcher(field.getSource());
+			if (matcher.find()) {
 				shouldIgnore = true;
 			}
 
 			// check for the modifier transient
-			if (field.getSource().matches(".?transient\\s.+")) {
-				shouldIgnore = true;
-			}
-			if (field.getSource().matches(".?static\\s.+")) {
+			pattern = Pattern.compile("(.?)(\\Qtransient\\E)(\\s)(.+)");
+			matcher = pattern.matcher(field.getSource());
+			if (matcher.find()) {
 				shouldIgnore = true;
 			}
 
