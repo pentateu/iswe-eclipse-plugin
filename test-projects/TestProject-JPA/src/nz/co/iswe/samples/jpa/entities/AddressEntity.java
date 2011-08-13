@@ -1,4 +1,4 @@
-package nz.co.iswe.samples.jpa;
+package nz.co.iswe.samples.jpa.entities;
 
 import java.io.Serializable;
 
