@@ -1,11 +1,11 @@
 package nz.co.iswe.generator.impl.eclipse.jpa;
 
-import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.IAnnotatable;
 import org.eclipse.jdt.core.IAnnotation;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IImportDeclaration;
 import org.eclipse.jdt.core.IMember;
+import org.eclipse.jdt.core.IMemberValuePair;
 import org.eclipse.jdt.core.JavaModelException;
 
 public class EclipseJpaUtil {
@@ -83,6 +83,21 @@ public class EclipseJpaUtil {
 		catch (JavaModelException e) {
 			throw new RuntimeException("Error looking-up for import: " + className, e);
 		}
+	}
+
+	public Object getAnnotationPropertyValue(IAnnotation annotation, String propertyName) {
+		try {
+			IMemberValuePair[] pairs = annotation.getMemberValuePairs();
+			for(IMemberValuePair pair : pairs){
+				if(propertyName.equals( pair.getMemberName() )){
+					return pair.getValue();
+				}
+			}
+		} 
+		catch (JavaModelException e) {
+			throw new RuntimeException("Error looking-up for annotation property: " + propertyName + " annotation:" + annotation, e);
+		}
+		return null;
 	}
 
 }

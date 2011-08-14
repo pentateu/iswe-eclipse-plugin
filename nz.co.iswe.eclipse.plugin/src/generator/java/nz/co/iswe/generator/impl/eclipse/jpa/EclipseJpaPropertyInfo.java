@@ -20,6 +20,12 @@ import org.eclipse.jdt.core.Signature;
 public class EclipseJpaPropertyInfo extends BasePropertyInfo {
 
 	
+	
+	private static final String JAVAX_PERSISTENCE_ID = "javax.persistence.Id";
+	private static final String NULLABLE2 = "nullable";
+	private static final String JAVAX_PERSISTENCE_COLUMN = "javax.persistence.Column";
+	private static final String LABEL2 = "label";
+
 	public EclipseJpaPropertyInfo(EntityInfo sourceEntity, IMethod method) throws JavaModelException {
 
 		this.sourceEntity = sourceEntity;
@@ -35,8 +41,8 @@ public class EclipseJpaPropertyInfo extends BasePropertyInfo {
 		
 	}
 	
-	public EclipseJpaPropertyInfo(EntityInfo sourceEntity, IField field) throws JavaModelException {
 
+	public EclipseJpaPropertyInfo(EntityInfo sourceEntity, IField field, boolean isTransient) throws JavaModelException {
 		this.sourceEntity = sourceEntity;
 		
 		//Property Name
@@ -47,33 +53,42 @@ public class EclipseJpaPropertyInfo extends BasePropertyInfo {
 		
 		parseAnnotations(field);
 		
+		this.isTransient = isTransient;
 	}
 
 	public void parseAnnotations(IAnnotatable annotable) {
-		
 		EclipseJpaUtil jpaUtil = EclipseJpaUtil.getInstance();
 		
 		//check for Generator annotation
 		IAnnotation generatorAnnotation = jpaUtil.getAnnotation(Generator.class.getName(), annotable);
 		if(generatorAnnotation != null){
 			//label
-			//generatorAnnotation.get
+			this.label = (String)jpaUtil.getAnnotationPropertyValue(generatorAnnotation, LABEL2);
+			
+			//TODO: Implement the rest: manyToOneConfigs, uploadConfigs and etc
 		}
 		
 		//Check for PrimaryKey
-		if(jpaUtil.getAnnotation("javax.persistence.Id", annotable) != null){
+		if(jpaUtil.getAnnotation(JAVAX_PERSISTENCE_ID, annotable) != null){
 			primaryKey = true;
 		}
 		
-		IAnnotation columnAnnotation = jpaUtil.getAnnotation("javax.persistence.Column", annotable);
+		IAnnotation columnAnnotation = jpaUtil.getAnnotation(JAVAX_PERSISTENCE_COLUMN, annotable);
 		if(columnAnnotation != null){
-
 			//Nullable
-			nullable = true;
-			
+			Boolean bValue = (Boolean)jpaUtil.getAnnotationPropertyValue(columnAnnotation, NULLABLE2);
+			if(bValue == null){
+				bValue = false;
+			}
+			nullable = bValue;
+			//TODO: IMplement the rest of the JPA properties
 		}
 		
-		
+		//label
+		if(getLabel() == null){
+			//if no label was defined through annotation
+			this.label = this.name;
+		}
 	}
 
 	private PropertyType resolvePropertyType(IMethod method) {
@@ -131,8 +146,10 @@ public class EclipseJpaPropertyInfo extends BasePropertyInfo {
 			String entityName = listMatcher.group(3);
 			String entityClass = EclipseJpaUtil.getInstance().lookUpImport(compilationUnit, entityName);
 			if(entityClass == null){
+				//if the class was not found in the import section it means the class is in the same package as the current class.
 				try {
-					entityClass = compilationUnit.getPackageDeclarations()[0].getElementName() + "." + entityName;
+					//get current class package
+					entityClass = compilationUnit.getPackageDeclarations()[0].getElementName() + "." + entityName; 
 				} catch (JavaModelException e) {
 					throw new RuntimeException("Error resolving property: " + propertyType, e);
 				}
@@ -150,3 +167,4 @@ public class EclipseJpaPropertyInfo extends BasePropertyInfo {
 	
 	
 }
+

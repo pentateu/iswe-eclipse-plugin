@@ -34,9 +34,9 @@ public class EclipseGeneratorContext extends GeneratorContext implements
 	 * VELOCITY_FILE_RESOURCE_LOADER_PATH =
 	 * "velocity.file.resource.loader.path"; private static final String
 	 * FILE_RESOURCE_LOADER_CACHE = "file.resource.loader.cache"; private static
-	 * final String FILE_RESOURCE_LOADER_PATH = "file.resource.loader.path";
+	 * 
 	 */
-
+	
 	public static IEclipseGeneratorContext getInstance() {
 		if (!instanceLoaded()) {
 			// get the default configuration xml file
@@ -52,22 +52,41 @@ public class EclipseGeneratorContext extends GeneratorContext implements
 		return (IEclipseGeneratorContext) GeneratorContext.getInstance();
 	}
 
-	private IProject project;
+	private IJavaProject project;
 
 	private IGeneratorHandler generatorHandler;
 
 	private boolean projectConfigLoaded = false;
 
 	@Override
-	public void setProject(IProject project) {
-		this.project = project;
-		// load the project specific config
-		if (!projectConfigLoaded) {
-			GeneratorContextConfig projectConfiguration = lookupProjectConfiguration();
-			if (projectConfiguration != null) {
-				addConfiguration(projectConfiguration);
+	protected void afterRun(String group) {
+		/*
+		//after each run refresh the project
+		try {
+			project.getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
+		}
+		catch (CoreException e) {
+			//error doing refresh at the project after the artfacts have been generated
+			//TODO: Log using the proper Eclipse log
+		}
+		*/
+	}
+	
+	@Override
+	public void setProject(IProject project) throws CoreException {
+		if (project.isNatureEnabled(JAVANATURE)) {
+			this.project = JavaCore.create(project);
+			// load the project specific config
+			if (!projectConfigLoaded) {
+				GeneratorContextConfig projectConfiguration = lookupProjectConfiguration();
+				if (projectConfiguration != null) {
+					addConfiguration(projectConfiguration);
+				}
+				projectConfigLoaded = true;
 			}
-			projectConfigLoaded = true;
+		}
+		else{
+			throw new RuntimeException("ISWE Pluing is only supported for project with Java Nature");
 		}
 	}
 
@@ -77,7 +96,7 @@ public class EclipseGeneratorContext extends GeneratorContext implements
 		}
 
 		String projectConfigFile = PluginUtil.getOverlayedPreferenceValue(
-				ISWEPlugin.getDefault().getPreferenceStore(), project,
+				ISWEPlugin.getDefault().getPreferenceStore(), project.getProject(),
 				ISWEGeneratorSettingsPage.PAGE_ID,
 				ISWEGeneratorSettingsPage.PROJECT_XML_CONFIG);
 
@@ -109,33 +128,29 @@ public class EclipseGeneratorContext extends GeneratorContext implements
 		List<IType> result = new ArrayList<IType>();
 
 		//
-		try {
-			if (project.isNatureEnabled(JAVANATURE)) {
+		try { 
+			IPackageFragment[] packages = project.getPackageFragments();
 
-				IJavaProject javaProject = JavaCore.create(project);
+			for (IPackageFragment pkg : packages) {
+				// Package fragments include all packages in the
+				// classpath
+				// We will only look at the package from the source
+				// folder
+				// K_BINARY would include also included JARS, e.g.
+				// rt.jar
+				if (pkg.getKind() == IPackageFragmentRoot.K_SOURCE) {
+					for (ICompilationUnit unit : pkg.getCompilationUnits()) {
 
-				IPackageFragment[] packages = javaProject.getPackageFragments();
-
-				for (IPackageFragment pkg : packages) {
-					// Package fragments include all packages in the
-					// classpath
-					// We will only look at the package from the source
-					// folder
-					// K_BINARY would include also included JARS, e.g.
-					// rt.jar
-					if (pkg.getKind() == IPackageFragmentRoot.K_SOURCE) {
-						for (ICompilationUnit unit : pkg.getCompilationUnits()) {
-
-							for (IType type : unit.getTypes()) {
-								if (filter.match(type)) {
-									result.add(type);
-								}
+						for (IType type : unit.getTypes()) {
+							if (filter.match(type)) {
+								result.add(type);
 							}
 						}
 					}
 				}
-
 			}
+
+			
 		} catch (CoreException e) {
 			// Do nothing
 			e.printStackTrace();
@@ -149,6 +164,7 @@ public class EclipseGeneratorContext extends GeneratorContext implements
 		if (generatorHandler == null) {
 			generatorHandler = new EclipseGeneratorHandler(project);
 		}
+		super.init();
 	}
 
 	public IGeneratorHandler getGeneratorHandler() {

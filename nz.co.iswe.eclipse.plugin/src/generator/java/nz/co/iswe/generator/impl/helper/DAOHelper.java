@@ -7,8 +7,7 @@ import nz.co.iswe.generator.info.EntityInfo;
 
 public class DAOHelper extends AbstractHelper implements IHelper, IPattern {
 	
-	private static final String DAO_PACKAGE_TO = "packageTo";
-	private static final String DAO_PACKAGE_FROM = "packageFrom";
+	
 	public static final String NAME = "daoHelper";
 	
 	//private static final String DAO_IMPL = "DAOImpl";
@@ -66,7 +65,7 @@ public class DAOHelper extends AbstractHelper implements IHelper, IPattern {
 	 * @return
 	 */
 	public String getPackage(EntityInfo entityInfo) {
-		return replacePackage(entityInfo, DAO_PACKAGE_FROM, DAO_PACKAGE_TO);
+		return null; //return replacePackage(entityInfo, DAO_PACKAGE_FROM, DAO_PACKAGE_TO);
 	}
 
 	@Override

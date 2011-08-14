@@ -4,6 +4,6 @@ public interface IGeneratorHandler {
 
 	boolean exists(String fullyQualifiedName);
 
-	void saveContent(String fullyQualifiedName, String content);
+	void saveJavaClass(String packageName, String className, String content);
 
 }

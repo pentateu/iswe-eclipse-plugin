@@ -12,7 +12,8 @@
 	<groups>
 		<group id="Model">
 			<generator ref="JpaDAO_Abstract" />
-			<generator ref="HibernateConfig" />
+			<generator ref="JpaDAO_Impl" />
+			<generator ref="JpaDAO_Interface" />
 		</group>
 		<group id="ControllerLayer">
 			<generator ref="JpaDAO_Abstract" />
@@ -21,12 +22,51 @@
 	</groups>
 
 	<oneToOne>
-		<generator id="JpaDAO_Abstract" class="nz.co.iswe.generator.impl.jpa.JpaAbstractDAOGenerator">
+		<generator id="JpaDAO_Abstract" class="nz.co.iswe.generator.impl.jpa.JpaDAOGenerator">
 			<input type="velocity">
 				<filename>JpaDAOAbstract.vm</filename>
 			</input>
 
 			<output override="always"/>
+<!-- 
+			<helpers>
+				
+					contextName is used inside the template:
+					${dao.getSomething()}
+				
+				<helper ref="JpaDAOHelper" contextName="dao" />
+				 
+			</helpers>
+			-->
+
+			<!-- Generator Local Properties -->
+			<properties>
+				<sufixToRemove>Entity</sufixToRemove>
+				<!-- 
+					The generator object in the expression is the Generator object instance.
+					${generator.getPackage()} will return the dao package by using the 
+					entity package and doing a replace with the packageTo literal
+					the entity object in the expression is the entity object being
+					processed in the moment.
+					${entity.simpleName} return the entity name without the package
+				-->
+				<fullyQualifiedName>${generator.getPackage($entity)}.${generator.getEntityPrefixName($entity)}DAOAbstract</fullyQualifiedName>
+				<!--
+				 	packageFrom is a regular expression to define what portion of the
+				 	entity package will be replaced with the content of the property packageTo
+				 -->
+				<packageFrom>entities</packageFrom>
+				<!-- Literal value to be used to replace the entity package -->
+				<packageTo>dao</packageTo>
+			</properties>
+		</generator>
+		
+		<generator id="JpaDAO_Impl" class="nz.co.iswe.generator.impl.jpa.JpaDAOGenerator">
+			<input type="velocity">
+				<filename>JpaDAOImpl.vm</filename>
+			</input>
+
+			<output override="no"/>
 
 			<helpers>
 				<!-- 
@@ -38,7 +78,34 @@
 
 			<!-- Generator Local Properties -->
 			<properties>
-				<property.name>value</property.name>
+				<sufixToRemove>Entity</sufixToRemove>
+				<fullyQualifiedName>${generator.getPackage($entity)}.${generator.getEntityPrefixName($entity)}DAOImpl</fullyQualifiedName>
+				<packageFrom>entities</packageFrom>
+				<packageTo>dao</packageTo>
+			</properties>
+		</generator>
+		
+		<generator id="JpaDAO_Interface" class="nz.co.iswe.generator.impl.jpa.JpaDAOGenerator">
+			<input type="velocity">
+				<filename>JpaDAOInterface.vm</filename>
+			</input>
+
+			<output override="no"/>
+
+			<helpers>
+				<!-- 
+					contextName is used inside the template:
+					${dao.getSomething()}
+				 -->
+				<helper ref="JpaDAOHelper" contextName="dao" />
+			</helpers>
+
+			<!-- Generator Local Properties -->
+			<properties>
+				<sufixToRemove>Entity</sufixToRemove>
+				<fullyQualifiedName>${generator.getPackage($entity)}.I${generator.getEntityPrefixName($entity)}DAO</fullyQualifiedName>
+				<packageFrom>entities</packageFrom>
+				<packageTo>dao</packageTo>
 			</properties>
 		</generator>
 	</oneToOne>
@@ -64,34 +131,15 @@
 		<helper id="JpaDAOHelper" class="nz.co.iswe.generator.impl.helper.DAOHelper">
 			<!-- Pattern Properties -->
 			<properties>
-				<!--
-				 	packageFrom is a regular expression to define what portion of the
-				 	entity package will be replaced with the content of the property packageTo
-				 -->
-				<packageFrom>entities</packageFrom>
-				
-				<!-- Literal value to be used to replace the entity package -->
-				<packageTo>dao</packageTo>
-				
-				<!-- 
-					The dao object in the expression is the Helper itself.
-					${dao.package} will return the dao package by using the 
-					entity package and doing a replace with the packageTo literal
-					the entity object in the expression is the entity object being
-					processed in the moment.
-					${entity.simpleName} return the entity name without the package
-				-->
-				<abstract.fullyQualifiedName>${dao.package}.${entity.simpleName}DAOAbstract</abstract.fullyQualifiedName>
-				<interface.fullyQualifiedName>${dao.package}.I${entity.simpleName}DAO</interface.fullyQualifiedName>
-				<impl.fullyQualifiedName>${dao.package}.${entity.simpleName}DAOImpl</impl.fullyQualifiedName>
+
 			</properties>
 		</helper>
 	</helpers>
 
 	<!-- Global Properties -->
 	<properties>
-		<!-- Default values. Can be overriden by a project specific configuration.xml file -->
-		<velocity.default.templates>./templates</velocity.default.templates>
+		<!-- Default values. Can be overridden by a project specific configuration.xml file -->
+		<velocity.default.templates>/Users/pentateu/git/iswe-eclipse-plugin/nz.co.iswe.eclipse.plugin/META-INF/templates</velocity.default.templates>
 		
 		
 		

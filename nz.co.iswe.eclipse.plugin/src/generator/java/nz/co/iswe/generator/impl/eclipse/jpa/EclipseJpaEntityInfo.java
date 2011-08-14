@@ -20,6 +20,7 @@ public class EclipseJpaEntityInfo extends BaseEntityInfo {
 
 	private static final String JAVAX_PERSISTENCE_TRANSIENT = "javax.persistence.Transient";
 
+	
 	private IType type;
 
 	private Map<String, PropertyInfo> propertyMap = new HashMap<String, PropertyInfo>();
@@ -89,13 +90,6 @@ public class EclipseJpaEntityInfo extends BaseEntityInfo {
 		for (IField field : fields) {
 
 			boolean shouldIgnore = false;
-			// check it it is persistent
-			IAnnotation transientAnnotation = EclipseJpaUtil.getInstance().getAnnotation(JAVAX_PERSISTENCE_TRANSIENT,
-					field);
-			
-			if (transientAnnotation != null) {
-				shouldIgnore = true;
-			}
 			
 			//check for static fields
 			Pattern pattern = Pattern.compile("(.?)(\\Qstatic\\E)(\\s)(.+)");
@@ -104,16 +98,23 @@ public class EclipseJpaEntityInfo extends BaseEntityInfo {
 				shouldIgnore = true;
 			}
 
-			// check for the modifier transient
-			pattern = Pattern.compile("(.?)(\\Qtransient\\E)(\\s)(.+)");
-			matcher = pattern.matcher(field.getSource());
-			if (matcher.find()) {
-				shouldIgnore = true;
-			}
-
 			if (!shouldIgnore) {
+				// check if it is a transient property
+				IAnnotation transientAnnotation = EclipseJpaUtil.getInstance().getAnnotation(JAVAX_PERSISTENCE_TRANSIENT, field);
+				boolean isTransient = false;
+				if (transientAnnotation != null) {
+					isTransient = true;
+				}
+				
+				// check for the modifier transient
+				pattern = Pattern.compile("(.?)(\\Qtransient\\E)(\\s)(.+)");
+				matcher = pattern.matcher(field.getSource());
+				if (matcher.find()) {
+					isTransient = true;
+				}
+				
 				// It is a persistent Field -> Property
-				PropertyInfo propertyInfo = new EclipseJpaPropertyInfo(this, field);
+				PropertyInfo propertyInfo = new EclipseJpaPropertyInfo(this, field, isTransient);
 
 				if (!propertyMap.containsKey(propertyInfo.getName())) {
 

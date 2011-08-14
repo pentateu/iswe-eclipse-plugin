@@ -25,9 +25,19 @@ public abstract class BasePropertyInfo implements PropertyInfo {
 	
 	protected boolean nullable = true;
 	
+	protected boolean isTransient = false;
+	
 	protected String label;
 	
 	protected String matchMode = MatchMode.ANYWHERE.toString();// DEFAULT
+
+	private boolean oneToOne = false;
+
+	private boolean manyToMany = false;
+
+	private boolean manyToOne = false;
+
+	private boolean oneToMany = false;
 	
 	public String getName() {
 		return name;
@@ -64,28 +74,24 @@ public abstract class BasePropertyInfo implements PropertyInfo {
 	
 	@Override
 	public boolean isTransient() {
-		// TODO Auto-generated method stub
-		return false;
+		return isTransient;
 	}
+	
 	@Override
 	public boolean isOneToOne() {
-		// TODO Auto-generated method stub
-		return false;
+		return oneToOne;
 	}
 	@Override
 	public boolean isManyToMany() {
-		// TODO Auto-generated method stub
-		return false;
+		return manyToMany;
 	}
 	@Override
 	public boolean isManyToOne() {
-		// TODO Auto-generated method stub
-		return false;
+		return manyToOne;
 	}
 	@Override
 	public boolean isOneToMany() {
-		// TODO Auto-generated method stub
-		return false;
+		return oneToMany;
 	}
 	
 	

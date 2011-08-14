@@ -11,6 +11,7 @@ import nz.co.iswe.generator.info.EntityInfoFactory;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jface.action.IAction;
@@ -73,10 +74,6 @@ public class GenerateModelClasses implements IObjectActionDelegate, IViewActionD
 		//load the meta-data for the selected entities
 		List<EntityInfo> entityList = factory.getEntityList(selectedEntities);
 		
-		//TEST ONLY
-		entityList.get(0).getPropertyList();
-		
-		
 		try {
 			context.run("Model", entityList);
 		} catch (Exception e) {
@@ -124,7 +121,11 @@ public class GenerateModelClasses implements IObjectActionDelegate, IViewActionD
 				if(project != null){
 					IEclipseGeneratorContext context = EclipseGeneratorContext.getInstance();
 					//set the project to be used in the Generator Context
-					context.setProject(project);
+					try {
+						context.setProject(project);
+					} catch (CoreException e) {
+						throw new RuntimeException("Error trying to set the current project", e);
+					}
 					context.init();
 				}
 			}

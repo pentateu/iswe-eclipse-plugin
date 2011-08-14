@@ -16,6 +16,14 @@ import org.apache.velocity.exception.VelocityException;
 import org.apache.velocity.runtime.RuntimeInstance;
 import org.apache.velocity.runtime.parser.ParseException;
 
+/**
+ * Class responsible to parse/resolve expressions used inside the XML configuration files.
+ * 
+ * It uses Velocity internally to parse the expressions.
+ * 
+ * @author "Rafael Almeida"
+ *
+ */
 public class ExpressionParser {
 
 	private VelocityContext velocityContext = new VelocityContext();
@@ -24,30 +32,25 @@ public class ExpressionParser {
 		velocityContext.put(name, value);
 	}
 
-	public String parse(String expression) throws Exception {
-		/*
-		 * create a new instance of the engine
-		 */
-		//VelocityEngine ve = new VelocityEngine();
-		/*
-		 * initialize the engine
-		 */
-		//ve.init();
-		
-		//ve.getTemplate("");
-
-		// Template t = ve.getTemplate("");
-		Template template = new RuntimeStringTemplate(expression);
-
-		StringWriter writer = new StringWriter();
-
-		template.merge(velocityContext, writer);
-
-		String result = writer.toString();
-		
-		writer.close();
-		
-		return result;
+	public String parse(String expression) {
+		try{
+			Template template = new RuntimeStringTemplate(expression);
+	
+			StringWriter writer = new StringWriter();
+			
+			template.process();
+	
+			template.merge(velocityContext, writer);
+	
+			String result = writer.toString();
+			
+			writer.close();
+			
+			return result;
+		}
+		catch(Exception exp){
+			throw new RuntimeException("Error parsing expression: " + expression, exp);
+		}
 	}
 
 	class RuntimeStringTemplate extends Template {

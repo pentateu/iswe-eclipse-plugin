@@ -28,7 +28,7 @@ import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.junit.After;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -37,15 +37,15 @@ import org.junit.Test;
  */
 public class EclipseJpaEntityInfoTest {
 
-	IJavaProject javaProject = null;
+	static IJavaProject javaProject = null;
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@Before
-	public void setUp() throws Exception {
+	@BeforeClass
+	public static void setUp() throws Exception {
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		IProject project = root.getProject("TestProject-JPA");
-		javaProject =JavaCore.create(project);
+		javaProject = JavaCore.create(project);
 		
 		IEclipseGeneratorContext context = EclipseGeneratorContext.getInstance();
 		//set the project to be used in the Generator Context
@@ -59,7 +59,7 @@ public class EclipseJpaEntityInfoTest {
 	@After
 	public void tearDown() throws Exception {
 	}
-
+	
 	/**
 	 * Test method for {@link nz.co.iswe.generator.impl.eclipse.jpa.EclipseJpaEntityInfo#getPropertyList()}.
 	 * @throws JavaModelException 
@@ -87,21 +87,61 @@ public class EclipseJpaEntityInfoTest {
 		
 		assertEquals("# of properties", 4, props.size());
 		
+		//clientId
+		{
+			PropertyInfo prop = props.get(0);
+			assertEquals(PropertyType.NUMERIC_INTEGER, prop.getPropertyType());
+			assertEquals("clientId", prop.getName());
+			assertEquals(entityInfo, prop.getSourceEntity());
+			assertTrue(prop.isPrimaryKey());
+			assertNull(prop.getReferenceEntity());
+			assertEquals("clientId", prop.getLabel());
+			assertTrue(prop.isNullable());
+			assertFalse(prop.isTransient());
+			assertFalse(prop.isOneToOne());
+			assertFalse(prop.isManyToMany());
+			assertFalse(prop.isManyToOne());
+			assertFalse(prop.isOneToMany());
+			assertEquals(MatchMode.ANYWHERE.toString(), prop.getMatchMode());
+		}
 		
-		PropertyInfo propClientId = props.get(0);
-		assertEquals(PropertyType.NUMERIC_INTEGER, propClientId.getPropertyType());
-		assertEquals("clientId", propClientId.getName());
-		assertEquals(entityInfo, propClientId.getSourceEntity());
-		assertTrue(propClientId.isPrimaryKey());
-		assertNull(propClientId.getReferenceEntity());
-		assertEquals("clientId", propClientId.getLabel());
-		assertFalse(propClientId.isNullable());
-		assertFalse(propClientId.isTransient());
-		assertFalse(propClientId.isOneToOne());
-		assertFalse(propClientId.isManyToMany());
-		assertFalse(propClientId.isManyToOne());
-		assertFalse(propClientId.isOneToMany());
-		assertEquals(MatchMode.ANYWHERE.toString(), propClientId.getMatchMode());
+		//name
+		{
+			PropertyInfo prop = props.get(1);
+			assertEquals(PropertyType.TEXT, prop.getPropertyType());
+			assertEquals("name", prop.getName());
+			assertEquals(entityInfo, prop.getSourceEntity());
+			assertFalse(prop.isPrimaryKey());
+			assertNull(prop.getReferenceEntity());
+			assertEquals("name", prop.getLabel());
+			assertFalse(prop.isNullable());
+			assertFalse(prop.isTransient());
+			assertFalse(prop.isOneToOne());
+			assertFalse(prop.isManyToMany());
+			assertFalse(prop.isManyToOne());
+			assertFalse(prop.isOneToMany());
+			assertEquals(MatchMode.ANYWHERE.toString(), prop.getMatchMode());
+		}
+		
+		//age
+		{
+			PropertyInfo prop = props.get(2);
+			assertEquals(PropertyType.NUMERIC_INTEGER, prop.getPropertyType());
+			assertEquals("age", prop.getName());
+			assertEquals(entityInfo, prop.getSourceEntity());
+			assertFalse(prop.isPrimaryKey());
+			assertNull(prop.getReferenceEntity());
+			assertEquals("Client Age", prop.getLabel());
+			assertFalse(prop.isNullable());
+			assertFalse(prop.isTransient());
+			assertFalse(prop.isOneToOne());
+			assertFalse(prop.isManyToMany());
+			assertFalse(prop.isManyToOne());
+			assertFalse(prop.isOneToMany());
+			assertEquals(MatchMode.ANYWHERE.toString(), prop.getMatchMode());
+		}
+		
+		
 		
 	}
 }

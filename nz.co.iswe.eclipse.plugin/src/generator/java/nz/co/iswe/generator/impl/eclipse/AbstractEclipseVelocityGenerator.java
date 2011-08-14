@@ -3,7 +3,6 @@ package nz.co.iswe.generator.impl.eclipse;
 import java.io.StringWriter;
 
 import nz.co.iswe.generator.impl.AbstractVelocityGenerator;
-import nz.co.iswe.generator.impl.helper.IPattern;
 import nz.co.iswe.generator.info.EntityInfo;
 
 import org.apache.velocity.Template;
@@ -14,9 +13,9 @@ import org.apache.velocity.app.Velocity;
 public abstract class AbstractEclipseVelocityGenerator extends AbstractVelocityGenerator {
 
 	private static final String NO = "no";
-	private static final String ENTITY = "Entity";
+	private static final String ENTITY = "entity";
 	
-	protected IPattern pattern;
+	//protected IPattern pattern;
 	
 	public AbstractEclipseVelocityGenerator(){
 		
@@ -29,7 +28,7 @@ public abstract class AbstractEclipseVelocityGenerator extends AbstractVelocityG
 		VelocityContext ctx = buildVelocityContext();
 		
 		// ### Put the entity in the 
-		// ${Entity.getSimpleName()}
+		// ${entity.getSimpleName()}
 		ctx.put(ENTITY, entityInfo);
 		
 		String fullyQualifiedName = getFullyQualifiedName(entityInfo);
@@ -44,7 +43,7 @@ public abstract class AbstractEclipseVelocityGenerator extends AbstractVelocityG
 		
 		if(generateOutput){
 			// get the template.
-    		Template template = Velocity.getTemplate(generatorConfig.getInput().getFilename());
+			Template template = Velocity.getTemplate(generatorConfig.getInput().getFilename());
 			
 			//Output
 			StringWriter wrt = new StringWriter();
@@ -52,15 +51,14 @@ public abstract class AbstractEclipseVelocityGenerator extends AbstractVelocityG
 			// merge the template
 			template.merge(ctx, wrt);
 			
+			String packageName = getPackage(entityInfo);
+			
+			String className = getSimpleClassName(entityInfo);
+			
 			//save the result
-			generatorHandler.saveContent(fullyQualifiedName, wrt.toString());
+			generatorHandler.saveJavaClass(packageName, className, wrt.toString());
 			
 			wrt.close();
 		}
 	}
-
-	protected String getFullyQualifiedName(EntityInfo entityInfo) throws Exception {
-		// create the complete path for the output file
-		return pattern.getAbstractFullyQualifiedName(entityInfo);
-	}	
 }

@@ -1,11 +1,8 @@
 package nz.co.iswe.generator.config;
 
 import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import junit.framework.Assert;
-
 import nz.co.iswe.generator.config.xml.GeneratorConfig;
 import nz.co.iswe.generator.config.xml.GeneratorContextConfig;
 import nz.co.iswe.generator.config.xml.HelperConfig;
