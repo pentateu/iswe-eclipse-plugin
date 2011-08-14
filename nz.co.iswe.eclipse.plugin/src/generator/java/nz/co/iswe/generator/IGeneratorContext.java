@@ -2,6 +2,7 @@ package nz.co.iswe.generator;
 
 import java.util.List;
 
+import nz.co.iswe.generator.config.GlobalPropertiesResolver;
 import nz.co.iswe.generator.config.xml.GeneratorContextConfig;
 import nz.co.iswe.generator.helper.IHelper;
 import nz.co.iswe.generator.info.EntityInfo;
@@ -23,4 +24,6 @@ public interface IGeneratorContext {
 	IGeneratorHandler getGeneratorHandler();
 
 	void addConfiguration(GeneratorContextConfig config);
+
+	GlobalPropertiesResolver getGlobalPropertiesResolver();
 }

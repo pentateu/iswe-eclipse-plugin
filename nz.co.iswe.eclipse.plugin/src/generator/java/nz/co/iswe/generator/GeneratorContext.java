@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import nz.co.iswe.generator.config.ConfigurationContext;
-import nz.co.iswe.generator.config.GlobalPropertiesContextResolver;
+import nz.co.iswe.generator.config.GlobalPropertiesResolver;
 import nz.co.iswe.generator.config.xml.GeneratorConfig;
 import nz.co.iswe.generator.config.xml.GeneratorContextConfig;
 import nz.co.iswe.generator.config.xml.GroupConfig;
@@ -79,7 +79,10 @@ public abstract class GeneratorContext implements IGeneratorContext {
 	// #############################################//
 
 	// hold the configuration
-	protected GeneratorContextConfig configuration = null;
+	private GeneratorContextConfig configuration = null; //must be kept private and be accessed through the get method
+	
+	//hold the Global Property Resolver
+	private GlobalPropertiesResolver globalPropertiesContext = null;//must be kept private and be accessed through the get method
 
 	private Map<String, IGenerator> cachedGenerators = new HashMap<String, IGenerator>();
 	private Map<String, IHelper> cachedHelpersById = new HashMap<String, IHelper>();
@@ -102,18 +105,31 @@ public abstract class GeneratorContext implements IGeneratorContext {
 		}
 		return configuration;
 	}
+	
+	@Override
+	public GlobalPropertiesResolver getGlobalPropertiesResolver() {
+		if(globalPropertiesContext == null){
+			globalPropertiesContext = new GlobalPropertiesResolver(getConfiguration());
+			initGlobalPropertiesContext(globalPropertiesContext);
+		}
+		return globalPropertiesContext;
+	}
+
+	/**
+	 * Method that can be override to populate the context of the GlobalPropertiesResolver object
+	 */
+	protected void initGlobalPropertiesContext(GlobalPropertiesResolver globalPropertiesContext) {
+		
+	}
 
 	public String getProperty(String path) {
 
-		if (configuration == null) {
-			throw new RuntimeException(
-					"GeneratorContext.configuration not loaded!");
-		}
-
+		getConfiguration();//make sure it is available
+		
 		String value = null;
 
 		try {
-			value = BeanUtils.getProperty(configuration, path);
+			value = BeanUtils.getProperty(getConfiguration(), path);
 		} catch (Exception e) {
 			// try to get the property from the generic property list
 			ListOfProperties properties = configuration.getProperties();
@@ -221,13 +237,10 @@ public abstract class GeneratorContext implements IGeneratorContext {
 		setupVelocity();
 	}
 
-	private void setupVelocity() {
+	protected void setupVelocity() {
 
-		GlobalPropertiesContextResolver globalPropertiesContext = new GlobalPropertiesContextResolver(
-				configuration.getProperties());
-
-		String defaultTemplates = globalPropertiesContext
-				.get("velocity.default.templates");
+		//
+		String defaultTemplates = getGlobalPropertiesResolver().get("velocity.default.templates");
 
 		String pathsVelocity = defaultTemplates + ",";
 

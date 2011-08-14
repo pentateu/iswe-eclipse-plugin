@@ -5,7 +5,7 @@ import java.util.List;
 import nz.co.iswe.generator.IGenerator;
 import nz.co.iswe.generator.IGeneratorContext;
 import nz.co.iswe.generator.IGeneratorHandler;
-import nz.co.iswe.generator.config.GlobalPropertiesContextResolver;
+import nz.co.iswe.generator.config.GlobalPropertiesResolver;
 import nz.co.iswe.generator.config.xml.GeneratorConfig;
 import nz.co.iswe.generator.config.xml.ListOfProperties;
 import nz.co.iswe.generator.helper.HelpersContext;
@@ -129,9 +129,9 @@ public abstract class AbstractVelocityGenerator implements IGenerator {
 		
 		// ### Global Properties
 		// ${global.get("property.name")}
-		GlobalPropertiesContextResolver globalPropertiesContext = new GlobalPropertiesContextResolver(generatorConfig.getProperties());
+		//SimplePropertiesContextResolver propertiesContext = new SimplePropertiesContextResolver(generatorConfig.getProperties());
 		
-		ctx.put(GLOBAL, globalPropertiesContext);
+		ctx.put(GLOBAL, generatorContext.getGlobalPropertiesResolver());
 		
 		// ### context -> IGeneratorContext
 		ctx.put(CONTEXT, generatorContext);

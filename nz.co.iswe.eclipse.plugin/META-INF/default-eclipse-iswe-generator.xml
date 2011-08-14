@@ -141,12 +141,7 @@
 		<!-- Default values. Can be overridden by a project specific configuration.xml file -->
 		<velocity.default.templates>/Users/pentateu/git/iswe-eclipse-plugin/nz.co.iswe.eclipse.plugin/META-INF/templates</velocity.default.templates>
 		
-		
-		
-		
-		
-		
-		
+
 		
 	</properties>
 

@@ -11,6 +11,7 @@ import nz.co.iswe.generator.GeneratorContext;
 import nz.co.iswe.generator.IGenerator;
 import nz.co.iswe.generator.IGeneratorHandler;
 import nz.co.iswe.generator.config.ConfigurationContext;
+import nz.co.iswe.generator.config.GlobalPropertiesResolver;
 import nz.co.iswe.generator.config.xml.GeneratorConfig;
 import nz.co.iswe.generator.config.xml.GeneratorContextConfig;
 
@@ -58,6 +59,16 @@ public class EclipseGeneratorContext extends GeneratorContext implements
 
 	private boolean projectConfigLoaded = false;
 
+	@Override
+	protected void initGlobalPropertiesContext(GlobalPropertiesResolver globalPropertiesContext) {
+		//add the project path to the context
+		String projectRootPath = project.getProject().getRawLocation().toOSString();
+	
+		globalPropertiesContext.put("project_root_path", projectRootPath);
+		
+		
+	}
+	
 	@Override
 	protected void afterRun(String group) {
 		/*
